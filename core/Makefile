@@ -1926,6 +1926,7 @@ CM_TARGET_PACKAGE := $(PRODUCT_OUT)/$(CM_VERSION).zip
 
 BOOT_ZIP_FROM_IMAGE_SCRIPT := ./build/tools/releasetools/boot_flash_from_image
 KERNEL_PATH := $(TARGET_KERNEL_SOURCE)/arch/arm/configs/$(TARGET_KERNEL_CONFIG)
+KERNEL_PATH := $(TARGET_KERNEL_SOURCE)/arch/arm64/configs/$(TARGET_KERNEL_CONFIG)
 
 .PHONY: bootzip otapackage bacon
 bootzip: bootimage

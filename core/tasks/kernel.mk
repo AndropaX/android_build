@@ -216,6 +216,24 @@ else
 KERNEL_TOOLCHAIN_PREFIX ?= $(TARGET_KERNEL_CROSS_COMPILE_PREFIX)
 endif
 
+ifeq ($(TARGET_ARCH),arm64)
+     ifneq ($(USE_CCACHE),)
+       ccache := $(ANDROID_BUILD_TOP)/prebuilts/misc/$(HOST_PREBUILT_TAG)/ccache/ccache
+       # Check that the executable is here.
+       ccache := $(strip $(wildcard $(ccache)))
+     endif
+     ifneq ($(TARGET_GCC_VERSION_ARM64),)
+       ifeq ($(HOST_OS),darwin)
+         KERNEL_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilts/gcc/darwin-x86/aarch64/aarch64-linux-android-$(TARGET_GCC_VERSION_ARM64)/bin/aarch64-linux-android-"
+       else
+         KERNEL_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-$(TARGET_GCC_VERSION_ARM64)/bin/aarch64-linux-android-"
+       endif
+     else
+       KERNEL_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ARM_EABI_TOOLCHAIN)/aarch64-linux-android-"
+     endif
+     ccache = 
+endif
+
 ifeq ($(KERNEL_TOOLCHAIN),)
 KERNEL_TOOLCHAIN_PATH := $(KERNEL_TOOLCHAIN_PREFIX)
 else
@@ -230,7 +248,6 @@ ifneq ($(USE_CCACHE),)
     ccache := $(strip $(wildcard $(ccache)))
 endif
 
-KERNEL_CROSS_COMPILE := CROSS_COMPILE="$(ccache) $(KERNEL_TOOLCHAIN_PATH)"
 ccache =
 
 define mv-modules
